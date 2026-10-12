@@ -913,6 +913,13 @@ button { font: inherit; color: inherit; }
 
 /* ---------- Responsive ---------- */
 
+@media (min-width: 761px) and (max-width: 1000px) {
+  :root { --card-w: clamp(52px, min(8vw, 11.5vh), 96px); }
+  .player { grid-template-columns: 1fr; }
+  .controls { flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center; }
+  .pulse { flex-direction: row; flex-wrap: wrap; }
+}
+
 @media (max-width: 760px) {
   .arena {
     grid-template-columns: minmax(0, 1fr);
