@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>E-Card · 賭博黙示録</title>
+  <meta name="description" content="La Eカード de Kaiji: apuesta tu oído contra Tonegawa. Emperador, Ciudadano, Esclavo.">
+  <meta name="theme-color" content="#0b0b0d">
+  <link rel="icon" href="assets/cards/back.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Shippori+Mincho+B1:wght@500;800&family=Zen+Kaku+Gothic+New:wght@500;700;900&display=swap">
+  <link rel="stylesheet" href="css/main.css">
+  <script type="module" src="js/ui/app.js"></script>
+</head>
+<body>
+  <svg class="defs" width="0" height="0" aria-hidden="true" focusable="false">
+    <filter id="gunya" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence id="gunya-noise" type="fractalNoise" baseFrequency="0.008 0.03" numOctaves="2" seed="7" result="noise"/>
+      <feDisplacementMap id="gunya-map" in="SourceGraphic" in2="noise" scale="0" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </svg>
+
+  <div id="stage" class="stage" hidden>
+    <header class="topbar">
+      <div class="topbar__group">
+        <span class="topbar__game" id="hud-game">第1戦</span>
+        <span class="topbar__of">/ 12</span>
+        <span class="side-badge" id="hud-side" data-side="emperor">皇帝側</span>
+      </div>
+      <div class="topbar__group">
+        <span class="topbar__label">賭け</span><span class="topbar__value" id="hud-bet">—</span>
+        <span class="topbar__label">所持</span><span class="topbar__value topbar__value--gold" id="hud-yen">0円</span>
+      </div>
+    </header>
+
+    <div class="arena">
+      <aside class="arena__left">
+        <button class="device" id="device" type="button" aria-label="Aparato del oído: aguja a 0 milímetros">
+          <span class="device__ear" aria-hidden="true">耳</span>
+          <span class="device__tube" aria-hidden="true">
+            <span class="device__needle"></span>
+            <span class="device__ghost"></span>
+            <span class="device__tick" style="--at: 10"><i>10</i></span>
+            <span class="device__tick" style="--at: 20"><i>20</i></span>
+            <span class="device__mark device__mark--eardrum"><b>鼓膜</b></span>
+            <span class="device__mark device__mark--canals"><b>三半規管</b></span>
+          </span>
+          <span class="device__value" id="device-value">0mm</span>
+        </button>
+      </aside>
+
+      <main class="arena__center">
+        <section class="opponent" aria-label="Tonegawa">
+          <div class="portrait" id="portrait">
+            <img src="assets/portraits/tonegawa.webp" alt="Yukio Tonegawa" width="360" height="446">
+          </div>
+          <div class="bubble" id="bubble" role="status" aria-live="polite" hidden></div>
+          <div class="opp-hand" id="opp-hand" aria-label="Cartas de Tonegawa"></div>
+        </section>
+
+        <section class="table" id="table" aria-label="Mesa">
+          <div class="table__meta">
+            <span class="turn-label" id="hud-turn">1ターン目</span>
+            <span class="order" id="order">先 · Kaiji</span>
+          </div>
+          <div class="slot slot--tonegawa" id="slot-tonegawa" aria-label="Carta de Tonegawa"></div>
+          <div class="slot slot--kaiji" id="slot-kaiji" aria-label="Tu carta"></div>
+          <div class="verdict" id="verdict" aria-live="assertive"></div>
+          <div class="timer" id="timer" hidden><span class="timer__bar"></span><span class="timer__text"></span></div>
+        </section>
+
+        <section class="player" aria-label="Tu mano">
+          <div class="hand" id="hand"></div>
+          <div class="controls">
+            <fieldset class="pulse" id="pulse" hidden>
+              <legend>脈拍 · Pulso</legend>
+              <label><input type="radio" name="pulse" value="natural" checked><span>自然 Natural</span></label>
+              <label><input type="radio" name="pulse" value="fakeCalm"><span>平静 Fingir calma</span></label>
+              <label><input type="radio" name="pulse" value="fakePanic"><span>動揺 Fingir pánico</span></label>
+            </fieldset>
+            <button class="btn btn--play" id="play" type="button" disabled>出す <small>Jugar</small></button>
+          </div>
+        </section>
+      </main>
+
+      <aside class="arena__right">
+        <button class="watch" id="watch" type="button" aria-label="El reloj de Tonegawa">
+          <svg viewBox="0 0 100 100" aria-hidden="true">
+            <circle cx="50" cy="50" r="46" class="watch__case"/>
+            <circle cx="50" cy="50" r="38" class="watch__face"/>
+            <g class="watch__ticks">
+              <path d="M50 16v8M50 76v8M16 50h8M76 50h8"/>
+            </g>
+            <path class="watch__hand watch__hand--h" d="M50 50V30"/>
+            <path class="watch__hand watch__hand--s" d="M50 54V18"/>
+            <circle cx="50" cy="50" r="3" class="watch__pin"/>
+          </svg>
+          <span class="watch__label">時計</span>
+        </button>
+        <div class="monitor" id="monitor" hidden>
+          <canvas class="monitor__canvas" id="ecg" width="320" height="120" aria-hidden="true"></canvas>
+          <div class="monitor__bpm"><span id="bpm">72</span> <small>BPM</small></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <div class="fx" id="fx" aria-hidden="true">
+    <div class="fx__flash"></div>
+    <div class="fx__lines"></div>
+  </div>
+  <div class="zawa-layer" id="zawa" aria-hidden="true"></div>
+  <div class="narration" id="narration" role="status" aria-live="polite"></div>
+  <div class="overlay" id="overlay" hidden></div>
+  <dialog class="rules-dialog" id="rules" aria-label="Reglas"></dialog>
+  <button class="help" id="help" type="button" aria-label="Reglas">?</button>
+  <button class="sound" id="sound" type="button" aria-pressed="true" aria-label="Sonido">♪</button>
+
+  <noscript><p class="noscript">E-Card necesita JavaScript.</p></noscript>
+</body>
+</html>
