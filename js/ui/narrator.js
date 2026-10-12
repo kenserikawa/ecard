@@ -1,6 +1,7 @@
 // Narrador (cajas negras de manga) y bocadillo de Tonegawa. Solo textContent: nunca HTML.
 const $ = (id) => document.getElementById(id);
 let queue = Promise.resolve();
+let generation = 0; // clearNarration() la incrementa: los rótulos encolados antes se descartan
 let bubbleTimer = 0;
 
 function span(cls, text) {
@@ -38,11 +39,14 @@ function show({ jp, es }, ms, kind) {
  * @param {{ms?: number, kind?: 'narrator'|'kaiji'}} opts
  */
 export function narrate(line, { ms = 2600, kind = 'narrator' } = {}) {
-  queue = queue.then(() => show(line, ms, kind));
+  const gen = generation;
+  queue = queue.then(() => (gen === generation ? show(line, ms, kind) : undefined));
   return queue;
 }
 
+/** Quita el rótulo visible y descarta los que estaban en cola. */
 export function clearNarration() {
+  generation += 1;
   $('narration').replaceChildren();
 }
 

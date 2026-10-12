@@ -33,6 +33,7 @@ const session = {
   discovering: false,
   pendingDiscovery: false,
   awaitingCard: false,
+  clickCaption: false,
 };
 
 const shuffled = (list) => {
@@ -99,7 +100,13 @@ async function handleDiscoveryClick(fn) {
     if (session.awaitingCard && $('overlay').hidden) await flushPendingDiscovery();
     return;
   }
-  narrate(line(r.event), { kind: 'kaiji', ms: 2400 });
+  // Un solo rótulo de clic a la vez: los clics repetidos no encolan rótulos ni frenan el bucle.
+  // (El estado ya se guardó arriba: los demás eventos de clic no lo cambian o son idempotentes.)
+  if (session.clickCaption) return;
+  session.clickCaption = true;
+  narrate(line(r.event), { kind: 'kaiji', ms: 2400 }).finally(() => {
+    session.clickCaption = false;
+  });
 }
 
 /** Espera la carta de Kaiji (con reloj). Resuelve { card, mode }. */
@@ -317,6 +324,7 @@ async function runSession() {
   session.discovering = false;
   session.pendingDiscovery = false;
   session.awaitingCard = false;
+  session.clickCaption = false;
   setDiscoveredUI(false);
   hud.setNeedle(0);
   hud.setGhost(0, 0);
