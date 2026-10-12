@@ -64,8 +64,10 @@ js/i18n/es.js        # diccionario español (los textos actuales)
 ## Selector
 
 - **Título:** tres botones `EN · 日本語 · ES` con `aria-pressed`.
-- **En partida:** botón fijo encima de «?» que despliega los tres. Etiqueta accesible
-  «Language / 言語 / Idioma».
+- **En partida:** botón en la cabecera (grupo derecho) que despliega los tres. No es
+  flotante para no tapar más la mano en móvil. Etiqueta accesible traducida («Language»,
+  «言語», «Idioma»). Mientras haya una pantalla encima, la mesa está inerte, así que el
+  idioma se cambia en la mesa o en el título.
 
 ## Tono
 
