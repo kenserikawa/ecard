@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { formatYen, formatYenEs, gameLabel, turnLabel, mmLabel } from '../js/format.js';
-import { load, save, mergeRecord } from '../js/storage.js';
+import { load, save, mergeRecord, sanitizeRecord } from '../js/storage.js';
 
 test('formatYen usa 万 para múltiplos de 10.000', () => {
   assert.equal(formatYen(0), '0円');
@@ -34,4 +34,9 @@ test('mergeRecord guarda el máximo de yenes y el mejor final', () => {
   assert.deepEqual(r, { bestYen: 5_000_000, bestEnding: 'survivor' });
   r = mergeRecord(r, { yen: 9_000_000, ending: 'canals' });
   assert.deepEqual(r, { bestYen: 9_000_000, bestEnding: 'survivor' });
+});
+
+test('sanitizeRecord y mergeRecord sobreviven a un récord corrupto', () => {
+  assert.deepEqual(sanitizeRecord({ bestYen: 'x', bestEnding: 'zzz' }), { bestYen: 0, bestEnding: null });
+  assert.deepEqual(mergeRecord({ bestYen: NaN, bestEnding: 'zzz' }, { yen: 5, ending: 'broke' }), { bestYen: 5, bestEnding: 'broke' });
 });

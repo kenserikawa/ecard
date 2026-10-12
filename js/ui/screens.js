@@ -91,7 +91,7 @@ export function showTitle({ record }) {
         el.style.setProperty('--rot', `${(i - 1) * 9}deg`);
         return el;
       }));
-    const rec = record?.bestEnding
+    const rec = record?.bestEnding && ENDINGS[record.bestEnding]
       ? h('p', { class: 'screen__note', text: `Récord: ${formatYen(record.bestYen)} · ${ENDINGS[record.bestEnding].jp}` })
       : null;
     open(h('div', { class: 'screen title' },
@@ -205,7 +205,9 @@ export function showEnding({ ending, yen, needle, history, record }) {
         stat('Ganadas', String(wins)),
         stat('Botín', formatYen(yen)),
         stat('Aguja', `${needle} mm`)),
-      h('p', { class: 'screen__note', text: `Récord: ${formatYen(record.bestYen)} · ${ENDINGS[record.bestEnding].jp}` }),
+      record?.bestEnding && ENDINGS[record.bestEnding]
+        ? h('p', { class: 'screen__note', text: `Récord: ${formatYen(record.bestYen)} · ${ENDINGS[record.bestEnding].jp}` })
+        : null,
       h('div', { class: 'screen__actions' },
         h('button', { class: 'btn btn--blood', type: 'button', 'data-autofocus': true, onclick: () => { close(); resolve('again'); } },
           'もう一度', h('small', { text: 'Otra vez' })),

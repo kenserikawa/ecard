@@ -11,7 +11,7 @@ import {
   DISCOVERY_EVENT, createDiscovery, onGlance, onSuspiciousWin, clickWatch, clickDevice, checkForcedReveal,
 } from '../discovery.js';
 import { line, betLineKey } from '../lines.js';
-import { load, save, mergeRecord } from '../storage.js';
+import { load, save, mergeRecord, sanitizeRecord } from '../storage.js';
 import { initAudio, setMuted, isMuted, sfx, startZawa, stopZawa } from '../audio.js';
 import * as fx from './fx.js';
 import { narrate, say, hush, clearNarration } from './narrator.js';
@@ -410,7 +410,7 @@ async function boot() {
   for (;;) {
     if (next === 'title') {
       $('stage').hidden = true;
-      await screens.showTitle({ record: load('record', null) });
+      await screens.showTitle({ record: sanitizeRecord(load('record', null)) });
       initAudio();
       if (!load('prologueSeen', false)) {
         await screens.showPrologue();
@@ -423,4 +423,4 @@ async function boot() {
 
 if (new URLSearchParams(location.search).has('debug')) globalThis.__ecard = session;
 
-boot();
+boot().catch((err) => console.error('E-Card:', err));
