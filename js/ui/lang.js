@@ -17,7 +17,10 @@ export function applyStaticI18n(root = document) {
   }
   document.documentElement.lang = getLang();
   const btn = $('lang');
-  if (btn) btn.textContent = LANG_LABELS[getLang()];
+  if (btn) {
+    btn.textContent = LANG_LABELS[getLang()];
+    btn.setAttribute('aria-label', `${t('ui.lang')}: ${LANG_LABELS[getLang()]}`);
+  }
 }
 
 /** Botonera de idiomas. `onPick(lang)` se llama tras cambiarlo. */
