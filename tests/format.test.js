@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { formatYen, formatYenEs, gameLabel, turnLabel, mmLabel } from '../js/format.js';
+import { formatYen, formatYenEs, formatMoney, gameLabel, turnLabel, mmLabel } from '../js/format.js';
 import { load, save, mergeRecord, sanitizeRecord } from '../js/storage.js';
 
 test('formatYen usa 万 para múltiplos de 10.000', () => {
@@ -14,6 +14,14 @@ test('formatYen usa 万 para múltiplos de 10.000', () => {
 test('formatYenEs usa puntos de millar', () => {
   assert.equal(formatYenEs(20_000_000), '20.000.000 ¥');
   assert.equal(formatYenEs(0), '0 ¥');
+});
+
+test('formatMoney: formato de cada idioma', () => {
+  assert.equal(formatMoney(20_000_000, 'en'), '¥20,000,000');
+  assert.equal(formatMoney(0, 'en'), '¥0');
+  assert.equal(formatMoney(20_000_000, 'ja'), '2,000万円');
+  assert.equal(formatMoney(20_000_000, 'es'), '20.000.000 ¥');
+  assert.equal(formatMoney(500_000, 'xx'), '¥500,000');
 });
 
 test('etiquetas', () => {

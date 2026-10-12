@@ -11,6 +11,13 @@ export function formatYenEs(yen) {
   return `${Math.round(yen).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')} ¥`;
 }
 
+/** Cifra según idioma: en «¥20,000,000», ja «2,000万円», es «20.000.000 ¥». */
+export function formatMoney(yen, lang) {
+  if (lang === 'ja') return formatYen(yen);
+  if (lang === 'es') return formatYenEs(yen);
+  return `¥${group(yen)}`;
+}
+
 export const gameLabel = (game) => `第${game}戦`;
 export const turnLabel = (turn) => `${turn}ターン目`;
 export const mmLabel = (mm) => `${mm}mm`;
