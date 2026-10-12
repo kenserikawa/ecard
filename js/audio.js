@@ -153,7 +153,7 @@ export const sfx = {
 
 /** Murmullo ざわ…ざわ… continuo: ruido filtrado en tres bandas que respiran. */
 export function startZawa() {
-  if (!ready() || zawaNodes) return;
+  if (!ctx || zawaNodes) return;
   const t = ctx.currentTime;
   const out = ctx.createGain();
   out.gain.setValueAtTime(0.0001, t);
@@ -187,6 +187,8 @@ export function stopZawa() {
   if (!zawaNodes || !ctx) return;
   const [src, out, ...lfos] = zawaNodes;
   const t = ctx.currentTime;
+  out.gain.cancelScheduledValues(t);
+  out.gain.setValueAtTime(Math.max(out.gain.value, 0.0001), t);
   out.gain.setTargetAtTime(0.0001, t, 0.25);
   src.stop(t + 1.2);
   lfos.forEach((l) => l.stop(t + 1.2));
