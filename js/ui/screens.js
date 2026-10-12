@@ -31,6 +31,7 @@ function open(content, { whiteout = false } = {}) {
   o.classList.toggle('is-whiteout', whiteout);
   o.replaceChildren(content);
   o.hidden = false;
+  $('stage').inert = true;
   o.scrollTop = 0;
   requestAnimationFrame(() => content.querySelector('[data-autofocus]')?.focus());
 }
@@ -38,6 +39,7 @@ function open(content, { whiteout = false } = {}) {
 export function close() {
   const o = $('overlay');
   o.hidden = true;
+  $('stage').inert = false;
   o.classList.remove('is-whiteout');
   o.replaceChildren();
 }

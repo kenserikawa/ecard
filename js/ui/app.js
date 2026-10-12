@@ -31,6 +31,8 @@ const session = {
   ecg: null,
   onSelect: null,
   discovering: false,
+  pendingDiscovery: false,
+  awaitingCard: false,
 };
 
 const shuffled = (list) => {
@@ -70,30 +72,44 @@ function setDiscoveredUI(on) {
 
 async function discover(forced) {
   session.discovering = true;
-  clearNarration();
-  await screens.showDiscovery({ forced });
-  setDiscoveredUI(true);
-  updatePulse(session.hand.selected(), currentMode());
-  session.discovering = false;
+  try {
+    clearNarration();
+    await screens.showDiscovery({ forced });
+    setDiscoveredUI(true);
+    updatePulse(session.hand.selected(), currentMode());
+  } finally {
+    session.discovering = false;
+  }
+}
+
+/** Abre el descubrimiento pendiente en un punto seguro del bucle (sin otra pantalla abierta). */
+async function flushPendingDiscovery() {
+  if (!session.pendingDiscovery) return;
+  session.pendingDiscovery = false;
+  await discover(false);
 }
 
 async function handleDiscoveryClick(fn) {
-  if (!session.disc || session.discovering) return;
+  if (!session.disc || session.discovering || session.pendingDiscovery) return;
   const r = fn(session.disc);
   session.disc = r.state;
   if (r.event === DISCOVERY_EVENT.DISCOVER) {
-    await discover(false);
+    session.pendingDiscovery = true;
+    // Solo es seguro abrir la escena ya mientras Kaiji elige carta y no hay otra pantalla encima.
+    if (session.awaitingCard && $('overlay').hidden) await flushPendingDiscovery();
     return;
   }
   narrate(line(r.event), { kind: 'kaiji', ms: 2400 });
 }
 
 /** Espera la carta de Kaiji (con reloj). Resuelve { card, mode }. */
-function kaijiChoose() {
+async function kaijiChoose() {
+  await flushPendingDiscovery();
   return new Promise((resolve) => {
     const play = $('play');
     let stopTimer = () => {};
     const finish = (card, mode) => {
+      session.awaitingCard = false;
       stopTimer();
       session.hand.setEnabled(false);
       play.disabled = true;
@@ -112,6 +128,7 @@ function kaijiChoose() {
       const card = session.hand.take();
       if (card) finish(card, mode);
     };
+    session.awaitingCard = true;
     stopTimer = table.startTimer(CONFIG.TURN_SECONDS, {
       onTick: (left) => {
         if (left <= 10) sfx.tick();
@@ -209,6 +226,7 @@ async function resolveTurn(prev, kaijiCard, tonegawaCard, signal) {
 
 async function betPhase() {
   const s = session.state;
+  await flushPendingDiscovery();
   const forced = checkForcedReveal(session.disc, s.game);
   session.disc = forced.state;
   if (forced.event) await discover(true);
@@ -296,6 +314,9 @@ async function runSession() {
   session.memory = createMemory();
   session.disc = createDiscovery();
   session.suspicion = 0;
+  session.discovering = false;
+  session.pendingDiscovery = false;
+  session.awaitingCard = false;
   setDiscoveredUI(false);
   hud.setNeedle(0);
   hud.setGhost(0, 0);
