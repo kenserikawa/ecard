@@ -1,7 +1,8 @@
 // Cabecera, medidor de aguja, contador de yenes y monitor ECG.
 import { CONFIG } from '../config.js';
-import { formatYen, gameLabel, turnLabel, mmLabel } from '../format.js';
-import { SIDE_NAMES } from '../lines.js';
+import { formatMoney, gameLabel, turnLabel, mmLabel } from '../format.js';
+import { SIDE_JP, sideName } from '../lines.js';
+import { getLang, t } from '../i18n.js';
 import { prefersReducedMotion } from './fx.js';
 
 const $ = (id) => document.getElementById(id);
@@ -11,17 +12,26 @@ export function renderHud(state) {
   $('hud-game').textContent = gameLabel(state.game);
   const side = $('hud-side');
   side.dataset.side = state.kaijiSide;
-  side.textContent = SIDE_NAMES[state.kaijiSide].jp;
-  side.title = SIDE_NAMES[state.kaijiSide].es;
+  side.textContent = SIDE_JP[state.kaijiSide];
+  side.title = sideName(state.kaijiSide);
   $('hud-bet').textContent = state.bet ? mmLabel(state.bet) : '—';
   $('hud-turn').textContent = turnLabel(state.turn);
 }
 
+let lastOrder = 'kaiji';
+
+/** Indicador 先/後: 'kaiji' | 'tonegawa' | null (quinto turno). */
 export function setOrder(first) {
-  const el = $('order');
-  if (first === 'kaiji') el.textContent = '先 · Pones tú primero';
-  else if (first === 'tonegawa') el.textContent = '後 · Tonegawa pone primero';
-  else el.textContent = '最終 · Quinto turno';
+  lastOrder = first;
+  $('order').textContent = t(`ui.order.${first ?? 'final'}`);
+}
+
+/** Vuelve a escribir los textos de la mesa tras un cambio de idioma. */
+export function relabel(state) {
+  renderHud(state);
+  setOrder(lastOrder);
+  setNeedle(state.needle);
+  setYen(state.yen);
 }
 
 /** Coloca la aguja en `mm`. Con `delta > 0` salta un «+N mm» junto al aparato. */
@@ -29,7 +39,7 @@ export function setNeedle(mm, { delta = 0 } = {}) {
   const d = $('device');
   d.style.setProperty('--needle-pct', pct(mm));
   d.dataset.danger = String(mm >= 20);
-  d.setAttribute('aria-label', `Aparato del oído: aguja a ${mm} milímetros`);
+  d.setAttribute('aria-label', t('ui.device', { mm }));
   $('device-value').textContent = mmLabel(mm);
   if (delta > 0) {
     const pop = document.createElement('span');
@@ -53,7 +63,7 @@ export function setYen(yen, { animate = false } = {}) {
   const from = Number(el.dataset.value || 0);
   el.dataset.value = String(yen);
   if (!animate || from === yen || prefersReducedMotion()) {
-    el.textContent = formatYen(yen);
+    el.textContent = formatMoney(yen, getLang());
     return Promise.resolve();
   }
   return new Promise((resolve) => {
@@ -62,11 +72,11 @@ export function setYen(yen, { animate = false } = {}) {
     const frame = (now) => {
       const p = Math.min(1, (now - start) / dur);
       const eased = 1 - (1 - p) ** 3;
-      el.textContent = formatYen(Math.round((from + (yen - from) * eased) / 10_000) * 10_000);
+      el.textContent = formatMoney(Math.round((from + (yen - from) * eased) / 10_000) * 10_000, getLang());
       if (p < 1) {
         requestAnimationFrame(frame);
       } else {
-        el.textContent = formatYen(yen);
+        el.textContent = formatMoney(yen, getLang());
         resolve();
       }
     };

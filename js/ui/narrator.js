@@ -11,12 +11,12 @@ function span(cls, text) {
   return s;
 }
 
-function show({ jp, es }, ms, kind) {
+function show({ jp, sub }, ms, kind) {
   return new Promise((resolve) => {
     const el = document.createElement('div');
     el.className = `caption caption--${kind}`;
     if (jp) el.append(span('jp', jp));
-    if (es) el.append(span('es', es));
+    if (sub) el.append(span('es', sub));
     $('narration').append(el);
     let done = false;
     const finish = () => {
@@ -35,7 +35,7 @@ function show({ jp, es }, ms, kind) {
 
 /**
  * Muestra un rótulo. Los rótulos se encolan; la promesa se resuelve al ocultarse este.
- * @param {{jp?: string, es?: string}} line
+ * @param {{jp?: string, sub?: string}} line
  * @param {{ms?: number, kind?: 'narrator'|'kaiji'}} opts
  */
 export function narrate(line, { ms = 2600, kind = 'narrator' } = {}) {
@@ -51,9 +51,9 @@ export function clearNarration() {
 }
 
 /** Bocadillo de Tonegawa junto a su retrato. */
-export function say({ jp, es }, ms = 2600) {
+export function say({ jp, sub }, ms = 2600) {
   const b = $('bubble');
-  b.replaceChildren(span('jp', jp), span('es', es));
+  b.replaceChildren(span('jp', jp), ...(sub ? [span('es', sub)] : []));
   b.hidden = false;
   b.style.animation = 'none';
   void b.offsetWidth;

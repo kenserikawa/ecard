@@ -127,6 +127,46 @@ button { font: inherit; color: inherit; }
 .topbar__value { font-family: var(--font-display); font-size: 1.15rem; margin-right: 10px; }
 .topbar__value--gold { color: var(--gold-hi); }
 
+/* Selector de idioma (cabecera y título) */
+.lang-wrap { position: relative; align-self: center; }
+.lang {
+  min-width: 44px;
+  height: 32px;
+  padding: 0 10px;
+  border: 2px solid var(--paper);
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 900;
+  font-size: .85rem;
+  cursor: pointer;
+}
+.lang:hover, .lang[aria-expanded='true'] { background: var(--paper); color: var(--ink); }
+.lang-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 45;
+  padding: 6px;
+  background: var(--ink-2);
+  border: 2px solid var(--paper);
+  box-shadow: 5px 5px 0 var(--blood);
+}
+.lang-menu .lang-switch { flex-direction: column; }
+.lang-switch { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.lang-btn {
+  min-width: 56px;
+  min-height: 40px;
+  padding: 4px 12px;
+  border: 2px solid var(--paper);
+  background: transparent;
+  color: var(--paper);
+  font-weight: 900;
+  cursor: pointer;
+}
+.lang-btn:hover { border-color: var(--gold-hi); }
+.lang-btn[aria-pressed='true'] { background: var(--paper); color: var(--ink); }
+html[lang='ja'] .btn--play small { display: none; }
+
 .side-badge {
   align-self: center;
   padding: 2px 10px;

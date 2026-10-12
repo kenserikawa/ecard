@@ -11,6 +11,7 @@ import {
   DISCOVERY_EVENT, createDiscovery, onGlance, onSuspiciousWin, clickWatch, clickDevice, checkForcedReveal,
 } from '../discovery.js';
 import { line, betLineKey } from '../lines.js';
+import { t, onLangChange } from '../i18n.js';
 import { load, save, mergeRecord, sanitizeRecord } from '../storage.js';
 import { initAudio, setMuted, isMuted, sfx, startZawa, stopZawa } from '../audio.js';
 import * as fx from './fx.js';
@@ -18,6 +19,7 @@ import { narrate, say, hush, clearNarration } from './narrator.js';
 import * as hud from './hud.js';
 import * as table from './table.js';
 import * as screens from './screens.js';
+import { applyStaticI18n, mountLangMenu } from './lang.js';
 
 const $ = (id) => document.getElementById(id);
 const rng = createRng((Date.now() ^ Math.floor(Math.random() * 2 ** 32)) >>> 0);
@@ -265,7 +267,7 @@ async function turnPhase() {
   if (isForcedTurn(s)) {
     hud.setOrder(null);
     const { kaijiCard, tonegawaCard } = forcedCards(s);
-    await narrate({ jp: '五枚目', es: 'Cuatro empates. Solo quedan el Emperador y el Esclavo.' }, { ms: 2200 });
+    await narrate({ jp: '五枚目', sub: t('ui.forced') }, { ms: 2200 });
     session.hand.render([]);
     table.renderOpponent(0);
     table.placeInSlot('tonegawa');
@@ -357,6 +359,13 @@ function updateSoundButton() {
   $('sound').setAttribute('aria-pressed', String(!isMuted()));
 }
 
+/** Tras cambiar de idioma: textos de la mesa en curso (lo que ya está en pantalla termina en el anterior). */
+function relabelTable() {
+  if (!session.state || $('stage').hidden) return;
+  hud.relabel(session.state);
+  session.hand.relabel();
+}
+
 function wireEvents() {
   $('sound').addEventListener('click', () => {
     initAudio();
@@ -403,6 +412,12 @@ async function boot() {
       $('bpm').textContent = String(b);
       if (spike) sfx.thump();
     },
+  });
+  applyStaticI18n();
+  mountLangMenu();
+  onLangChange(() => {
+    applyStaticI18n();
+    relabelTable();
   });
   wireEvents();
 

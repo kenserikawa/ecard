@@ -1,5 +1,6 @@
 // Mesa: cartas (DOM), mano de Kaiji, mano de Tonegawa, ranuras, revelación y reloj de turno.
-import { CARD_NAMES } from '../lines.js';
+import { CARD_JP, cardName } from '../lines.js';
+import { t } from '../i18n.js';
 import { wait } from './fx.js';
 
 const $ = (id) => document.getElementById(id);
@@ -10,6 +11,8 @@ export const CARD_SRC = {
   slave: 'assets/cards/slave.webp',
 };
 export const BACK_SRC = 'assets/cards/back.svg';
+
+const cardLabel = (i, card) => t('ui.handCard', { n: i + 1, name: cardName(card), jp: CARD_JP[card] });
 
 function img(cls, src) {
   const i = new Image();
@@ -70,12 +73,16 @@ export function createHand({ onSelect } = {}) {
       const el = createCard(c, { tag: 'button' });
       el.style.setProperty('--rot', `${(i - mid) * 7}deg`);
       el.style.setProperty('--drop', `${Math.abs(i - mid) * 7}px`);
-      el.setAttribute('aria-label', `${i + 1}: ${CARD_NAMES[c].es} (${CARD_NAMES[c].jp})`);
+      el.setAttribute('aria-label', cardLabel(i, c));
       el.setAttribute('aria-pressed', 'false');
       el.addEventListener('click', () => select(i));
       return el;
     }));
     setEnabled(enabled);
+  }
+
+  function relabel() {
+    [...root.children].forEach((el, i) => el.setAttribute('aria-label', cardLabel(i, cards[i])));
   }
 
   function select(i) {
@@ -103,6 +110,7 @@ export function createHand({ onSelect } = {}) {
 
   return {
     render,
+    relabel,
     select,
     setEnabled,
     take,

@@ -1,10 +1,10 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>E-Card · 賭博黙示録</title>
-  <meta name="description" content="La Eカード de Kaiji: apuesta tu oído contra Tonegawa. Emperador, Ciudadano, Esclavo.">
+  <meta name="description" content="Kaiji's E-Card: bet your ear against Tonegawa. Emperor, Citizen, Slave. In English, 日本語 and Español.">
   <meta name="theme-color" content="#0b0b0d">
   <link rel="icon" href="assets/cards/back.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,13 +30,17 @@
       </div>
       <div class="topbar__group">
         <span class="topbar__label">賭け</span><span class="topbar__value" id="hud-bet">—</span>
-        <span class="topbar__label">所持</span><span class="topbar__value topbar__value--gold" id="hud-yen">0円</span>
+        <span class="topbar__label">所持</span><span class="topbar__value topbar__value--gold" id="hud-yen">¥0</span>
+        <span class="lang-wrap">
+          <button class="lang" id="lang" type="button" aria-haspopup="true" aria-expanded="false" data-i18n-attr="aria-label=ui.lang">EN</button>
+          <span class="lang-menu" id="lang-menu" hidden></span>
+        </span>
       </div>
     </header>
 
     <div class="arena">
       <aside class="arena__left">
-        <button class="device" id="device" type="button" aria-label="Aparato del oído: aguja a 0 milímetros">
+        <button class="device" id="device" type="button" aria-label="Ear device: needle at 0 millimeters">
           <span class="device__ear" aria-hidden="true">耳</span>
           <span class="device__tube" aria-hidden="true">
             <span class="device__needle"></span>
@@ -51,35 +55,35 @@
       </aside>
 
       <main class="arena__center">
-        <section class="opponent" aria-label="Tonegawa">
+        <section class="opponent" aria-label="Tonegawa" data-i18n-attr="aria-label=ui.static.opponent">
           <div class="portrait" id="portrait">
             <img src="assets/portraits/tonegawa.webp" alt="Yukio Tonegawa" width="360" height="446">
           </div>
           <div class="bubble" id="bubble" role="status" aria-live="polite" hidden></div>
-          <div class="opp-hand" id="opp-hand" aria-label="Cartas de Tonegawa"></div>
+          <div class="opp-hand" id="opp-hand" aria-label="Tonegawa's cards" data-i18n-attr="aria-label=ui.static.oppHand"></div>
         </section>
 
-        <section class="table" id="table" aria-label="Mesa">
+        <section class="table" id="table" aria-label="Table" data-i18n-attr="aria-label=ui.static.table">
           <div class="table__meta">
             <span class="turn-label" id="hud-turn">1ターン目</span>
             <span class="order" id="order">先 · Kaiji</span>
           </div>
-          <div class="slot slot--tonegawa" id="slot-tonegawa" aria-label="Carta de Tonegawa"></div>
-          <div class="slot slot--kaiji" id="slot-kaiji" aria-label="Tu carta"></div>
+          <div class="slot slot--tonegawa" id="slot-tonegawa" aria-label="Tonegawa's card" data-i18n-attr="aria-label=ui.static.slotTonegawa"></div>
+          <div class="slot slot--kaiji" id="slot-kaiji" aria-label="Your card" data-i18n-attr="aria-label=ui.static.slotKaiji"></div>
           <div class="verdict" id="verdict" aria-live="assertive"></div>
           <div class="timer" id="timer" hidden><span class="timer__bar"></span><span class="timer__text"></span></div>
         </section>
 
-        <section class="player" aria-label="Tu mano">
+        <section class="player" aria-label="Your hand" data-i18n-attr="aria-label=ui.static.player">
           <div class="hand" id="hand"></div>
           <div class="controls">
-            <button class="btn btn--play" id="play" type="button" disabled>出す <small>Jugar</small></button>
+            <button class="btn btn--play" id="play" type="button" disabled>出す <small data-i18n="ui.play">Play</small></button>
           </div>
         </section>
       </main>
 
       <aside class="arena__right">
-        <button class="watch" id="watch" type="button" aria-label="El reloj de Tonegawa">
+        <button class="watch" id="watch" type="button" aria-label="Tonegawa's watch" data-i18n-attr="aria-label=ui.static.watch">
           <svg viewBox="0 0 100 100" aria-hidden="true">
             <circle cx="50" cy="50" r="46" class="watch__case"/>
             <circle cx="50" cy="50" r="38" class="watch__face"/>
@@ -97,10 +101,10 @@
           <div class="monitor__bpm"><span id="bpm">72</span> <small>BPM</small></div>
         </div>
         <fieldset class="pulse" id="pulse" hidden>
-          <legend>脈拍 · Fingir pulso</legend>
-          <label><input type="radio" name="pulse" value="natural" checked><span>自然 Natural</span></label>
-          <label><input type="radio" name="pulse" value="fakeCalm"><span>平静 Calma</span></label>
-          <label><input type="radio" name="pulse" value="fakePanic"><span>動揺 Pánico</span></label>
+          <legend data-i18n="ui.static.pulse">脈拍 · Fake your pulse</legend>
+          <label><input type="radio" name="pulse" value="natural" checked><span data-i18n="ui.static.natural">自然 Natural</span></label>
+          <label><input type="radio" name="pulse" value="fakeCalm"><span data-i18n="ui.static.calm">平静 Calm</span></label>
+          <label><input type="radio" name="pulse" value="fakePanic"><span data-i18n="ui.static.panic">動揺 Panic</span></label>
         </fieldset>
       </aside>
     </div>
@@ -113,10 +117,10 @@
   <div class="zawa-layer" id="zawa" aria-hidden="true"></div>
   <div class="narration" id="narration" role="status" aria-live="polite"></div>
   <div class="overlay" id="overlay" hidden></div>
-  <dialog class="rules-dialog" id="rules" aria-label="Reglas"></dialog>
-  <button class="help" id="help" type="button" aria-label="Reglas">?</button>
-  <button class="sound" id="sound" type="button" aria-pressed="true" aria-label="Sonido">♪</button>
+  <dialog class="rules-dialog" id="rules" aria-label="Rules" data-i18n-attr="aria-label=ui.static.rules"></dialog>
+  <button class="help" id="help" type="button" aria-label="Rules" data-i18n-attr="aria-label=ui.static.rules">?</button>
+  <button class="sound" id="sound" type="button" aria-pressed="true" aria-label="Sound" data-i18n-attr="aria-label=ui.static.sound">♪</button>
 
-  <noscript><p class="noscript">E-Card necesita JavaScript.</p></noscript>
+  <noscript><p class="noscript">E-Card needs JavaScript. · JavaScriptが必要です。 · E-Card necesita JavaScript.</p></noscript>
 </body>
 </html>
