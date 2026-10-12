@@ -31,6 +31,9 @@ python3 -m http.server 8000       # then open http://localhost:8000/?debug
 `?debug` exposes the session state as `globalThis.__ecard`. The game texts live in
 `js/i18n/{en,ja,es}.js`, which all share the same shape; a test fails if a translation is missing.
 
+The social preview `assets/og.jpg` (1200×630) is rendered from `tools/og.html`; the steps to
+regenerate it are in that file's header comment.
+
 ## Español
 
 La Eカード de *Kaiji* con las reglas del manga: apuesta milímetros de aguja contra Tonegawa y

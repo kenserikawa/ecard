@@ -1,0 +1,128 @@
+<!doctype html>
+<!--
+  Social preview (Open Graph / Twitter card), 1200×630.
+  Regenerate from the repo root (headless Chrome's viewport is shorter than its window,
+  so render taller and crop):
+    google-chrome --headless=new --hide-scrollbars --force-device-scale-factor=1 \
+      --window-size=1200,800 --virtual-time-budget=8000 \
+      --screenshot=/tmp/og-raw.png "file://$PWD/tools/og.html"
+    convert /tmp/og-raw.png -crop 1200x630+0+0 +repage -strip \
+      -sampling-factor 4:4:4 -quality 85 -interlace JPEG assets/og.jpg
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>E-Card · social preview</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Shippori+Mincho+B1:wght@800&family=Zen+Kaku+Gothic+New:wght@700;900&display=block">
+  <style>
+    :root {
+      --ink: #0b0b0d;
+      --paper: #efe9dc;
+      --paper-2: #d8d0bf;
+      --blood: #b3121b;
+      --blood-hot: #ff2a2a;
+      --gold: #c9a227;
+      --gold-hi: #f6dc84;
+      --steel: #8a96a3;
+      --steel-hi: #dfe6ee;
+      --font-display: 'Dela Gothic One', sans-serif;
+      --font-mincho: 'Shippori Mincho B1', serif;
+      --font-ui: 'Zen Kaku Gothic New', sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; background: var(--ink); }
+    body { font-family: var(--font-ui); color: var(--paper); }
+
+    .og { position: relative; width: 1200px; height: 630px; overflow: hidden; isolation: isolate;
+      background:
+        radial-gradient(ellipse 46% 62% at 50% 48%, rgb(179 18 27 / .55), transparent 70%),
+        radial-gradient(ellipse 80% 90% at 50% 50%, #1b1014, var(--ink) 75%); }
+    /* 集中線: speed lines converging on the title */
+    .og::before { content: ''; position: absolute; inset: -40%; z-index: -1; opacity: .5;
+      background: repeating-conic-gradient(from 0deg at 50% 50%, rgb(239 233 220 / .10) 0 .7deg, transparent .7deg 4.3deg);
+      -webkit-mask: radial-gradient(circle at 50% 50%, transparent 0 22%, #000 48%);
+              mask: radial-gradient(circle at 50% 50%, transparent 0 22%, #000 48%); }
+    /* screentone */
+    .og::after { content: ''; position: absolute; inset: 0; z-index: -1;
+      background: radial-gradient(circle at center, rgb(255 255 255 / .08) 0 1.1px, transparent 1.6px) 0 0 / 6px 6px; }
+
+    .card { position: absolute; top: 92px; width: 290px; height: calc(290px * 500 / 328);
+      border-radius: 20px; border: 3px solid var(--ink); object-fit: cover;
+      box-shadow: 0 0 0 3px var(--gold), 14px 18px 0 var(--ink), 0 24px 50px rgb(0 0 0 / .8); }
+    .card--emperor { left: 54px; transform: rotate(-9deg); }
+    .card--slave { right: 54px; transform: rotate(9deg); box-shadow: 0 0 0 3px var(--blood-hot), -14px 18px 0 var(--ink), 0 24px 50px rgb(0 0 0 / .8); }
+
+    .center { position: absolute; left: 50%; top: 0; bottom: 0; width: 640px; transform: translateX(-50%);
+      display: flex; flex-direction: column; align-items: center; text-align: center; z-index: 2; }
+    .kicker { margin: 112px 0 0; font-family: var(--font-mincho); font-weight: 800; font-size: 30px;
+      letter-spacing: .55em; padding-left: .55em; color: var(--paper-2);
+      text-shadow: 2px 2px 0 var(--ink); }
+    .logo { margin: 4px 0 0; font-family: var(--font-display); font-weight: 400; font-size: 150px; line-height: 1;
+      color: var(--paper); -webkit-text-stroke: 5px var(--ink); paint-order: stroke fill;
+      text-shadow: 8px 8px 0 var(--blood), 16px 16px 0 var(--ink); transform: rotate(-3deg); white-space: nowrap; }
+    .vs { margin: 22px 0 0; font-family: var(--font-ui); font-weight: 900; font-size: 22px; letter-spacing: .32em;
+      padding-left: .32em; color: var(--gold-hi); text-shadow: 2px 2px 0 var(--ink); }
+    .vs b { color: var(--blood-hot); font-weight: 900; }
+    .tag { margin: 18px 0 0; font-weight: 900; font-size: 40px; line-height: 1.15; color: var(--paper);
+      text-shadow: 3px 3px 0 var(--ink), 0 0 18px rgb(0 0 0 / .9); }
+    .tag em { font-style: normal; color: var(--blood-hot); }
+
+    /* The needle, millimetre by millimetre */
+    .needle { position: absolute; left: 50%; bottom: 104px; width: 500px; height: 30px; transform: translateX(-50%); z-index: 2; }
+    .needle__shaft { position: absolute; left: 0; right: 34px; top: 13px; height: 6px; border-radius: 3px;
+      background: linear-gradient(90deg, var(--steel), var(--steel-hi) 70%, #fff); box-shadow: 0 2px 0 var(--ink); }
+    .needle__tip { position: absolute; right: 0; top: 7px; width: 0; height: 0;
+      border-left: 38px solid var(--steel-hi); border-top: 9px solid transparent; border-bottom: 9px solid transparent;
+      filter: drop-shadow(0 2px 0 var(--ink)); }
+    .needle__ticks { position: absolute; left: 0; right: 34px; top: 0; height: 10px; opacity: .8;
+      background: repeating-linear-gradient(90deg, var(--paper-2) 0 2px, transparent 2px calc((100% - 2px) / 45)); }
+    .needle__ticks::after { content: ''; position: absolute; left: 0; right: 0; top: -6px; height: 6px;
+      background: repeating-linear-gradient(90deg, var(--paper-2) 0 2px, transparent 2px calc((100% - 2px) / 9)); }
+    .needle__mark { position: absolute; top: -8px; width: 4px; height: 42px; background: var(--blood-hot);
+      box-shadow: 0 0 10px var(--blood-hot); left: calc(30 / 45 * (100% - 34px)); }
+    .needle__label { position: absolute; top: -42px; font-family: var(--font-display); font-size: 24px; color: var(--blood-hot);
+      text-shadow: 2px 2px 0 var(--ink); transform: translateX(-50%); left: calc(30 / 45 * (100% - 34px)); white-space: nowrap; }
+
+    .foot { position: absolute; left: 0; right: 0; bottom: 30px; text-align: center; z-index: 2;
+      font-weight: 700; font-size: 20px; letter-spacing: .12em; color: var(--steel); }
+    .foot span { color: var(--paper-2); }
+
+    .zawa { position: absolute; font-family: var(--font-display); font-size: 44px; color: var(--paper);
+      -webkit-text-stroke: 2px var(--ink); paint-order: stroke fill; text-shadow: 4px 4px 0 var(--ink); z-index: 3; opacity: .92; }
+    .zawa--1 { left: 26px; top: 18px; transform: rotate(-12deg); }
+    .zawa--2 { right: 28px; top: 22px; transform: rotate(10deg); }
+    .zawa--3 { left: 30px; bottom: 14px; transform: rotate(-6deg); font-size: 34px; opacity: .7; }
+    .zawa--4 { right: 32px; bottom: 16px; transform: rotate(8deg); font-size: 34px; opacity: .7; }
+  </style>
+</head>
+<body>
+  <div class="og">
+    <img class="card card--emperor" src="../assets/cards/emperor.webp" alt="">
+    <img class="card card--slave" src="../assets/cards/slave.webp" alt="">
+
+    <div class="center">
+      <p class="kicker">賭博黙示録</p>
+      <h1 class="logo">Eカード</h1>
+      <p class="vs">EMPEROR <b>VS</b> SLAVE</p>
+      <p class="tag">Bet your <em>ear</em> against Tonegawa.</p>
+    </div>
+
+    <div class="needle" aria-hidden="true">
+      <div class="needle__ticks"></div>
+      <div class="needle__shaft"></div>
+      <div class="needle__tip"></div>
+      <div class="needle__mark"></div>
+      <div class="needle__label">30mm · 鼓膜</div>
+    </div>
+
+    <p class="foot">KAIJI'S E-CARD · <span>EN · 日本語 · ES</span> · PLAY FREE IN YOUR BROWSER</p>
+
+    <span class="zawa zawa--1">ざわ…</span>
+    <span class="zawa zawa--2">ざわ…</span>
+    <span class="zawa zawa--3">ざわ</span>
+    <span class="zawa zawa--4">ざわ</span>
+  </div>
+</body>
+</html>
