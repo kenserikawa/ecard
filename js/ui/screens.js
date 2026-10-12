@@ -226,6 +226,8 @@ export function showRules() {
     h('form', { method: 'dialog', class: 'screen__actions' },
       h('button', { class: 'btn', 'data-autofocus': true }, '閉じる', h('small', { text: 'Cerrar' })))));
   d.showModal();
-  d.querySelector('[data-autofocus]')?.focus();
+  d.querySelector('[data-autofocus]')?.focus({ preventScroll: true });
+  d.scrollTop = 0;
+  requestAnimationFrame(() => { d.scrollTop = 0; });
   return new Promise((resolve) => d.addEventListener('close', () => resolve(), { once: true }));
 }
