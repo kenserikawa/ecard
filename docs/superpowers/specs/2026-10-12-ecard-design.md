@@ -224,8 +224,10 @@ ciudadano y fingir calma con el Esclavo en el turno 4).
 - **Accesibilidad:** con `prefers-reduced-motion` se desactivan sacudidas, ぐにゃあ y
   derivas. Foco visible. Teclas 1–5 seleccionan carta y Enter confirma. Los mensajes del
   narrador van en una región `aria-live`. Contraste AA en los textos de interfaz.
+- **Medidor de aguja:** escala con marcas de 10 y 20 mm, línea roja 鼓膜 a 30 y fin 三半規管 a 45.
+  Cada vez que la aguja avanza, salta un «+N mm» rojo junto al aparato.
 - **Responsive:**
-  - Escritorio ≥ 900 px: medidor a la izquierda, ECG/reloj a la derecha, mesa al centro.
+  - Escritorio > 760 px: medidor a la izquierda, ECG/reloj a la derecha, mesa al centro.
   - Móvil: medidor horizontal arriba, ECG en una franja y mano compacta.
   - Sin scroll horizontal; margen de 16 px.
 
