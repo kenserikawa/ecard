@@ -21,7 +21,7 @@
   --font-mincho: 'Shippori Mincho B1', 'Hiragino Mincho ProN', 'Yu Mincho', serif;
   --font-ui: 'Zen Kaku Gothic New', 'Hiragino Sans', 'Noto Sans JP', system-ui, sans-serif;
 
-  --card-w: clamp(56px, min(9vw, 12.5vh), 112px);
+  --card-w: clamp(56px, min(9vw, 11vh), 112px);
   --portrait-w: clamp(72px, min(11vw, 17vh), 140px);
   --card-h: calc(var(--card-w) * 500 / 328);
   --radius-card: calc(var(--card-w) * 0.07);
@@ -512,7 +512,7 @@ button { font: inherit; color: inherit; }
   justify-content: center;
   align-items: flex-end;
   min-height: calc(var(--card-h) + 20px);
-  padding: 18px 24px 0;
+  padding: 18px 24px calc(var(--card-w) * .34);
 }
 .hand .card {
   margin: 0 calc(var(--card-w) * -.1);
