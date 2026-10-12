@@ -26,7 +26,7 @@ export default {
       emperor: 'Now you are the Emperor. Four Citizens cover you; beware the Slave.',
     },
     pulseWho: '脈拍 · Pulse',
-    ending: { games: 'Games', won: 'Won', loot: 'Winnings', needle: 'Needle', again: 'Again', title: 'Title' },
+    ending: { games: 'Games', won: 'Won', loot: 'Winnings', needle: 'Needle', again: 'Play again', title: 'Title screen' },
     close: 'Close',
     order: {
       kaiji: '先 · You place first',
@@ -61,7 +61,7 @@ export default {
     betSmall: ["That's all? Caution won't drag you out of the gutter.", 'Millimeter by millimeter… how sweet.'],
     betMid: ["Well, well. You're starting to understand the game.", 'Fine. Let the cards speak.'],
     betBig: ['Have you lost your mind? …I like it.', 'Interesting. Very interesting.'],
-    betDeadly: ['Lose, and you will never hear a sound again. You do know that?'],
+    betDeadly: ["Lose, and you will never hear a sound again. You do know that, don't you?"],
     tonegawaFirst: ['My card is down. Your move, Kaiji.', 'Think. You have time.', 'Can you read me?'],
     tonegawaSecond: ["Let's see…", '…'],
     tonegawaWins: ["Naive. It's written all over your face.", "It's useless, Kaiji.", 'This is reality.'],
@@ -75,14 +75,14 @@ export default {
     kaijiWinsGame: 'I won…!',
     kaijiLosesGame: "No… it can't be…",
     drill: 'The needle advances.',
-    timeout: "Time's up. The card plays itself.",
+    timeout: "Time's up. A card is played for you.",
     glance: 'Tonegawa… glanced at his watch.',
     hintRead: "He's reading me…? How…?",
     hintWatch: 'Why… does he always check his watch before he plays?',
     justAWatch: "…It's just a watch.",
     watchSuspect: 'That watch… What the hell is he looking at?',
     deviceOnly: 'This damn device…',
-    already: 'My pulse. I know. Now I play with it.',
+    already: 'My pulse. I know. Now I use it against him.',
   },
   prologue: [
     'A card game devised to amuse a single man: Kazutaka Hyōdō, chairman of the Teiai Group. Tonight, you are the one playing.',
@@ -141,7 +141,7 @@ export default {
         items: [
           'Turns 1 and 3: the Emperor side places first. Turns 2 and 4: the Slave side.',
           'Cards are placed face down and revealed at the same time.',
-          'You have 60 seconds per turn. When time runs out, the card plays itself.',
+          'You have 60 seconds per turn. When time runs out, a card is played for you.',
         ],
       },
       {

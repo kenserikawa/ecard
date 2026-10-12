@@ -51,6 +51,27 @@ test('en japonés el subtítulo idéntico al rótulo se omite', () => {
   }
 });
 
+test('lista cerrada de omisiones del subtítulo en japonés', () => {
+  setLang('ja');
+  try {
+    const whole = ['glance', 'hintRead', 'hintWatch', 'justAWatch', 'suspicion2', 'sideSwap', 'draw', 'win', 'lose', 'kaijiWinsGame'];
+    const variants = new Set(['tonegawaFirst:2', 'tonegawaSecond:1', 'tonegawaWins:2', 'tonegawaLoses:1']);
+    for (const key of Object.keys(LINES)) {
+      if (Array.isArray(LINES[key])) {
+        for (let i = 0; i < LINES[key].length; i++) {
+          const l = line(key, { int: () => i });
+          assert.equal(l.jp, LINES[key][i]);
+          assert.equal(l.sub === '', whole.includes(key) || variants.has(`${key}:${i}`), `ja ${key}[${i}] sub=${JSON.stringify(l.sub)}`);
+        }
+      } else {
+        assert.equal(line(key).sub === '', whole.includes(key), `ja ${key} sub=${JSON.stringify(line(key).sub)}`);
+      }
+    }
+  } finally {
+    setLang('en');
+  }
+});
+
 test('cada evento de descubrimiento tiene su línea', () => {
   for (const ev of Object.values(DISCOVERY_EVENT)) {
     if (ev === 'discover' || ev === 'discoverForced') continue;
