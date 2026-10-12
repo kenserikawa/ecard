@@ -914,7 +914,7 @@ button { font: inherit; color: inherit; }
 /* ---------- Responsive ---------- */
 
 @media (min-width: 761px) and (max-width: 1000px) {
-  :root { --card-w: clamp(52px, min(8vw, 11.5vh), 96px); }
+  :root { --card-w: clamp(52px, min(8vw, 8.5vh), 96px); }
   .player { grid-template-columns: 1fr; }
   .controls { flex-direction: row; flex-wrap: wrap; justify-content: center; align-items: center; }
   .pulse { flex-direction: row; flex-wrap: wrap; }
@@ -982,7 +982,7 @@ button { font: inherit; color: inherit; }
 }
 
 @media (max-width: 520px) {
-  :root { --card-w: clamp(54px, 17vw, 76px); --gutter: 12px; }
+  :root { --card-w: clamp(54px, 15.5vw, 76px); --gutter: 12px; }
   .topbar { padding: 8px var(--gutter); }
   .topbar__game { font-size: 1.2rem; }
   .table { min-height: calc(var(--card-h) + 96px); padding: 8px 8px 10px; }
