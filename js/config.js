@@ -1,0 +1,33 @@
+// Constantes ajustables del juego. Los módulos puros leen de aquí; nada más define números mágicos.
+export const CONFIG = Object.freeze({
+  GAMES: 12,
+  TURN_SECONDS: 60,
+
+  NEEDLE_EARDRUM: 30,
+  NEEDLE_MAX: 45,
+  RATE_EMPEROR: 100_000,
+  RATE_SLAVE: 500_000,
+  TRUE_ENDING_YEN: 20_000_000,
+
+  P_NATURAL: 0.85,
+  P_FAKE: 0.9,
+
+  HABIT_ALPHA: 2,
+  HABIT_DECAY: 0.85,
+  TRUST_PRIOR_CORRECT: 8.5,
+  TRUST_PRIOR_TOTAL: 10,
+  TRUST_DECAY: 0.8,
+  TRUST_BURN_WEIGHT: 4,
+  SOFTMAX_TAU: 0.07,
+
+  FORCED_REVEAL_GAME: 10,
+  NARRATED_GLANCES: 2,
+  HINT_READ_AT: 2,
+  HINT_WATCH_AT: 4,
+
+  BPM_BASE: 72,
+  BPM_PER_MM_NEEDLE: 1.2,
+  BPM_PER_MM_BET: 0.6,
+  BPM_SPIKE: 28,
+  BPM_NOISE: 3,
+});
