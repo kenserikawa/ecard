@@ -73,12 +73,6 @@
         <section class="player" aria-label="Tu mano">
           <div class="hand" id="hand"></div>
           <div class="controls">
-            <fieldset class="pulse" id="pulse" hidden>
-              <legend>脈拍 · Pulso</legend>
-              <label><input type="radio" name="pulse" value="natural" checked><span>自然 Natural</span></label>
-              <label><input type="radio" name="pulse" value="fakeCalm"><span>平静 Fingir calma</span></label>
-              <label><input type="radio" name="pulse" value="fakePanic"><span>動揺 Fingir pánico</span></label>
-            </fieldset>
             <button class="btn btn--play" id="play" type="button" disabled>出す <small>Jugar</small></button>
           </div>
         </section>
@@ -102,6 +96,12 @@
           <canvas class="monitor__canvas" id="ecg" width="320" height="120" aria-hidden="true"></canvas>
           <div class="monitor__bpm"><span id="bpm">72</span> <small>BPM</small></div>
         </div>
+        <fieldset class="pulse" id="pulse" hidden>
+          <legend>脈拍 · Fingir pulso</legend>
+          <label><input type="radio" name="pulse" value="natural" checked><span>自然 Natural</span></label>
+          <label><input type="radio" name="pulse" value="fakeCalm"><span>平静 Calma</span></label>
+          <label><input type="radio" name="pulse" value="fakePanic"><span>動揺 Pánico</span></label>
+        </fieldset>
       </aside>
     </div>
   </div>
