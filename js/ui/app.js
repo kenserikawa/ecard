@@ -197,7 +197,7 @@ async function gameEffects(prev, next) {
   sfx.lose();
   await narrate(line('kaijiLosesGame'), { kind: 'kaiji', ms: 1800 });
   portrait.classList.remove('is-menace');
-  if (next.lastTurn.first === 'kaiji') {
+  if (next.lastTurn.first === 'kaiji' && next.lastTurn.turn < 5) {
     const r = onSuspiciousWin(session.disc);
     session.disc = r.state;
     if (r.event) await narrate(line(r.event), { kind: 'kaiji', ms: 3200 });

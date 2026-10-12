@@ -48,7 +48,7 @@ export const PROLOGUE = [
 export const LINES = {
   betSmall: [
     { jp: '臆病者め…', es: '¿Tan poco? La prudencia no te sacará del agujero.' },
-    { jp: 'ククク…', es: 'Un milímetro… Qué tierno.' },
+    { jp: 'ククク…', es: 'Milímetro a milímetro… Qué tierno.' },
   ],
   betMid: [
     { jp: 'ほう…', es: 'Vaya. Empiezas a entender el juego.' },
@@ -169,7 +169,7 @@ export const RULES = {
       title: '賭け · La aguja',
       items: [
         'Antes de cada partida apuestas milímetros de aguja (de 1 a 45 − los que ya llevas).',
-        'Si ganas cobras 100.000 ¥/mm como Emperador y 500.000 ¥/mm como Esclavo.',
+        'Si ganas, cobras 100.000 ¥/mm como Emperador y 500.000 ¥/mm como Esclavo.',
         'Si pierdes, la aguja avanza lo apostado. A los 30 mm se perfora el tímpano y se acaba todo.',
         'Con 20.000.000 ¥ (2,000万円) o más al final… Tonegawa pagará caro su derrota.',
       ],

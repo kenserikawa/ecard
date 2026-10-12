@@ -44,7 +44,7 @@ export function close() {
   o.replaceChildren();
 }
 
-const DEVICE_SVG = `<svg viewBox="0 0 200 200" role="img" aria-label="Aparato del oído">
+const DEVICE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" role="img" aria-label="Aparato del oído">
   <rect width="200" height="200" fill="#efe9dc"/>
   <path d="M62 42c40-34 108-8 98 52-6 34-44 34-44 66 0 22-30 30-42 10" fill="none" stroke="#0b0b0d" stroke-width="9" stroke-linecap="round"/>
   <path d="M88 74c22-14 44 6 32 28" fill="none" stroke="#0b0b0d" stroke-width="6" stroke-linecap="round"/>

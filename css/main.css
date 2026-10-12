@@ -807,6 +807,7 @@ button { font: inherit; color: inherit; }
 .overlay.is-whiteout .ending__text { color: #3a3a40; }
 .overlay.is-whiteout .ending__stats { border-color: var(--ink); }
 .overlay.is-whiteout .btn--ghost { --btn-fg: var(--ink); border-color: var(--ink); }
+.overlay.is-whiteout .screen__note, .overlay.is-whiteout .ending__stats dt { color: #4a4a52; }
 .dogeza {
   position: relative;
   width: min(520px, 100%);
