@@ -42,6 +42,9 @@ js/
   match.js              # estado puro de la sesión de 12 partidas (reducer)
   pulse.js              # modelo puro de pulso y señal que lee Tonegawa
   tonegawa.js           # IA pura: memoria, creencias, decisión
+  discovery.js          # pistas y deducción de la trampa (puro)
+  format.js             # 万円, etiquetas 第N戦 / Nターン目 (puro)
+  storage.js            # localStorage con red + fusión del récord
   lines.js              # textos (ES + JP decorativo)
   audio.js              # sintetizador Web Audio
   ui/
@@ -52,7 +55,8 @@ js/
     narrator.js         # cajas de narrador, bocadillos de Tonegawa, viñetas
     screens.js          # título, prólogo, apuesta, descubrimiento, finales, reglas
 tests/
-  rules.test.js match.test.js pulse.test.js tonegawa.test.js balance.test.js
+  rules.test.js match.test.js pulse.test.js tonegawa.test.js discovery.test.js
+  format.test.js lines.test.js balance.test.js
 docs/superpowers/specs/ (este documento) y docs/superpowers/plans/
 ```
 
@@ -107,7 +111,8 @@ funciones puras devuelven actualizado.
   `k ∈ 1..4`: en riesgo `n_k` y jugadas `d_k`. Al acabar cada turno, si Kaiji aún tenía la
   especial al empezarlo, `n_k += 1`; si la jugó en ese turno, `d_k += 1`. El hazard estimado
   es `h_k = (d_k + α·h0_k) / (n_k + α)` con `h0_k = 1/(6−k)` y `α = 2`. `h_5 = 1`. Al
-  empezar cada partida se aplica decaimiento `HABIT_DECAY = 0.85` a `n` y `d`.
+  empezar cada partida se aplica decaimiento `HABIT_DECAY = 0.85` a `n` y `d` de la tabla
+  del bando que juega Kaiji en esa partida (la del otro bando se conserva intacta).
 - *Fiabilidad de la señal*: `a = (corr + 8.5) / (tot + 10)`, con prior en 0,85. Tras cada
   turno con lectura, al revelarse las cartas: `tot += w`, y `corr += w` si la señal acertó.
   El peso es `w = 4` si el error de lectura le costó la partida (le «quema») y `w = 1` en el
@@ -132,8 +137,11 @@ funciones puras devuelven actualizado.
 **Comportamiento esperado.** Antes del descubrimiento gana casi siempre cuando pone segundo.
 Como Emperador apenas arriesga (juega E solo cuando pone segundo y lee «ciudadano»), y como
 Esclavo castiga la E de Kaiji en los turnos 1 y 3. Cuando pone primero se adapta a los
-hábitos de Kaiji. Tras el primer engaño, `a` cae a ≈ 0,61; tras el segundo, a ≈ 0,47, y
-empieza a invertir lecturas.
+hábitos de Kaiji. Tras el primer engaño, `a` cae a ≈ 0,61; tras el segundo, por debajo de
+0,5, y empieza a invertir lecturas. Medido en simulación: el Emperador ingenuo gana el
+≈61 % y el Esclavo ingenuo el ≈9 %. Explotar siempre el pulso como Esclavo sube al ≈25 %:
+Tonegawa se adapta rápido. La jugada fuerte es el doble farol (fingir pánico con un
+ciudadano y fingir calma con el Esclavo en el turno 4).
 
 ## 6. Descubrimiento de la trampa
 
@@ -185,7 +193,14 @@ empieza a invertir lecturas.
    - Sobrevive con < 20.000.000 ¥ → «勝者…?».
    - Sobrevive con ≥ 20.000.000 ¥ → 圧倒的勝利: Tonegawa hace el 焼き土下座.
    - Todos muestran el resumen (partidas, ¥, mm) y el botón «もう一度».
-8. **Reglas:** modal accesible desde el título y desde el juego.
+8. **Reglas:** `<dialog>` nativo, independiente de las pantallas. Se abre desde el título y
+   con el botón fijo «?» durante el juego. El reloj de turno se pausa mientras haya una
+   pantalla o el diálogo abiertos.
+9. **Narrador:** las cajas aparecen en la parte baja de la mesa para no tapar el retrato
+   ni el bocadillo de Tonegawa. Al seleccionar la carta especial aparece «ドクン» con un
+   latido (también antes del descubrimiento: es otra pista).
+10. **Depuración:** con `?debug` en la URL se expone `globalThis.__ecard` (estado de la
+    sesión) para QA. Sin ese parámetro no se expone nada.
 
 **Persistencia** (`localStorage`, todo en try/catch, el juego funciona sin él): récord
 (¥ máximo y mejor final), sonido on/off, prólogo visto.
