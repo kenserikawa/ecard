@@ -47,5 +47,5 @@ descubre su trampa. Puedes jugar en español: elige «ES» en la pantalla de tí
 ## Credits
 
 Non-commercial fan project. *Kaiji* © Nobuyuki Fukumoto / Kodansha / VAP / Madhouse / NTV.
-The card illustrations (anime screenshots) and the character portraits (Kaiji Wiki, Fandom)
-belong to their respective owners.
+The card illustrations (anime screenshots), the ざわ…ざわ… sound effect (from the anime) and the
+character portraits (Kaiji Wiki, Fandom) belong to their respective owners.

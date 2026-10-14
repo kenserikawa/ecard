@@ -13,7 +13,9 @@ import {
 import { line, betLineKey } from '../lines.js';
 import { t, onLangChange } from '../i18n.js';
 import { load, save, mergeRecord, sanitizeRecord } from '../storage.js';
-import { initAudio, setMuted, isMuted, sfx, startZawa, stopZawa } from '../audio.js';
+import {
+  initAudio, setMuted, isMuted, sfx, startZawa, stopZawa, audioStarted, zawaLoaded,
+} from '../audio.js';
 import * as fx from './fx.js';
 import { narrate, say, hush, clearNarration } from './narrator.js';
 import * as hud from './hud.js';
@@ -352,7 +354,32 @@ async function runSession() {
   hush();
   if (s.ending === 'eardrum' || s.ending === 'canals') sfx.tinnitus(6);
   await fx.wait(600);
+  if (s.ending === 'triumph') sfx.zawa();
   return screens.showEnding({ ending: s.ending, yen: s.yen, needle: s.needle, history: s.history, record });
+}
+
+/**
+ * ざわ…ざわ… del título. Si el audio aún no está desbloqueado (primera visita), suena con el
+ * primer toque, junto a otra tanda de ざわ en pantalla, siempre que el título siga abierto.
+ */
+function titleZawa(closed) {
+  let open = true;
+  closed.then(() => { open = false; });
+  if (audioStarted()) {
+    sfx.zawa();
+    return;
+  }
+  const onFirstTouch = async () => {
+    document.removeEventListener('pointerdown', onFirstTouch);
+    document.removeEventListener('keydown', onFirstTouch);
+    initAudio();
+    await zawaLoaded();
+    if (!open || isMuted()) return;
+    fx.zawa({ count: 5 });
+    sfx.zawa();
+  };
+  document.addEventListener('pointerdown', onFirstTouch);
+  document.addEventListener('keydown', onFirstTouch);
 }
 
 function updateSoundButton() {
@@ -425,7 +452,9 @@ async function boot() {
   for (;;) {
     if (next === 'title') {
       $('stage').hidden = true;
-      await screens.showTitle({ record: sanitizeRecord(load('record', null)) });
+      const title = screens.showTitle({ record: sanitizeRecord(load('record', null)) });
+      titleZawa(title);
+      await title;
       initAudio();
       if (!load('prologueSeen', false)) {
         await screens.showPrologue();

@@ -1,13 +1,19 @@
-// Sintetizador Web Audio: todos los sonidos se generan, no hay ficheros.
+// Sintetizador Web Audio: todos los sonidos se generan salvo el ざわ…ざわ… del anime,
+// que se carga de un fichero; si falta, se sustituye por un murmullo sintetizado.
 // Ninguna función lanza si no hay AudioContext o si está en silencio.
 
 let ctx = null;
 let master = null;
 let muted = false;
 let noise = null;
+let zawaClip = null;
+let zawaLoad = Promise.resolve();
 let zawaNodes = null;
 
 const VOLUME = 0.7;
+const ZAWA_URL = 'assets/audio/zawa.mp3';
+const ZAWA_GAP = 2.5; // segundos de silencio entre repeticiones del clip
+const ZAWA_GAIN = 0.5;
 
 export function initAudio() {
   if (ctx) {
@@ -20,6 +26,28 @@ export function initAudio() {
   master = ctx.createGain();
   master.gain.value = muted ? 0 : VOLUME;
   master.connect(ctx.destination);
+  zawaLoad = loadZawaClip();
+}
+
+/** El AudioContext ya existe: se creó con un gesto del jugador, así que el navegador deja sonar. */
+export const audioStarted = () => ctx !== null;
+
+/** Promesa que se cumple cuando el clip ha cargado o ha fallado (nunca se rechaza). */
+export const zawaLoaded = () => zawaLoad;
+
+/** Carga el clip y le añade una cola de silencio para que el bucle respire. */
+async function loadZawaClip() {
+  try {
+    const res = await fetch(ZAWA_URL);
+    if (!res.ok) return;
+    const clip = await ctx.decodeAudioData(await res.arrayBuffer());
+    const gap = Math.round(ZAWA_GAP * clip.sampleRate);
+    const padded = ctx.createBuffer(clip.numberOfChannels, clip.length + gap, clip.sampleRate);
+    for (let c = 0; c < clip.numberOfChannels; c++) padded.copyToChannel(clip.getChannelData(c), c);
+    zawaClip = padded;
+  } catch {
+    // sin fichero o sin poder decodificarlo: startZawa usa el murmullo sintetizado
+  }
 }
 
 export function setMuted(value) {
@@ -149,11 +177,34 @@ export const sfx = {
     const t = ctx.currentTime;
     osc('sine', 8000, t, seconds, envGain(t, 0.05, seconds * 0.4, seconds * 0.6, 0.12));
   },
+  /** Un ざわ…ざわ… suelto: el clip una sola vez (sin clip, nada). */
+  zawa() {
+    if (!ready() || !zawaClip) return;
+    const [src] = playZawaClip();
+    src.loop = false;
+  },
 };
 
-/** Murmullo ざわ…ざわ… continuo: ruido filtrado en tres bandas que respiran. */
+/** ざわ…ざわ… continuo: el clip del anime en bucle o, si no cargó, el murmullo sintetizado. */
 export function startZawa() {
   if (!ctx || zawaNodes) return;
+  zawaNodes = zawaClip ? playZawaClip() : playMurmur();
+}
+
+function playZawaClip() {
+  const out = ctx.createGain();
+  out.gain.value = ZAWA_GAIN;
+  out.connect(master);
+  const src = ctx.createBufferSource();
+  src.buffer = zawaClip;
+  src.loop = true;
+  src.connect(out);
+  src.start(ctx.currentTime);
+  return [src, out];
+}
+
+/** Murmullo de reserva: ruido filtrado en tres bandas que respiran. */
+function playMurmur() {
   const t = ctx.currentTime;
   const out = ctx.createGain();
   out.gain.setValueAtTime(0.0001, t);
@@ -180,12 +231,17 @@ export function startZawa() {
     nodes.push(lfo);
   }
   src.start(t);
-  zawaNodes = nodes;
+  return nodes;
 }
 
 export function stopZawa() {
   if (!zawaNodes || !ctx) return;
   const [src, out, ...lfos] = zawaNodes;
+  if (src.buffer === zawaClip) {
+    src.loop = false; // la pasada en curso termina sola: no se corta un ざわ a medias
+    zawaNodes = null;
+    return;
+  }
   const t = ctx.currentTime;
   out.gain.cancelScheduledValues(t);
   out.gain.setValueAtTime(Math.max(out.gain.value, 0.0001), t);
